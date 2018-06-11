@@ -277,6 +277,8 @@ namespace rtCamp\WP\Nginx {
 			    return false;
 			}
 
+			$url_data['scheme'] = 'http';
+
 			// Build a hash of the URL
 			$hash = md5($url_data['scheme'].'GET'.$url_data['host'].$url_data['path']);
 
