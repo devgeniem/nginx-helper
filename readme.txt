@@ -1,12 +1,12 @@
 === Nginx Helper ===
-Contributors: rtcamp, rahul286, saurabhshukla, manishsongirkar36, faishal, desaiuditd, darren-slatten, jk3us, daankortenbach, telofy, pjv, llonchj, jinnko, weskoop, bcole808, gungeekatx, rohanveer, chandrapatel, gagan0123, ravanh, michaelbeil, samedwards, niwreg, entr, nuvoPoint
+Contributors: rtcamp, rahul286, saurabhshukla, manishsongirkar36, faishal, desaiuditd, darren-slatten, jk3us, daankortenbach, telofy, pjv, llonchj, jinnko, weskoop, bcole808, gungeekatx, rohanveer, chandrapatel, gagan0123, ravanh, michaelbeil, samedwards, niwreg, entr, nuvoPoint, iam404, rittesh.patel, vishalkakadiya, BhargavBhandari90, vincent-lu, murrayjbrown, bryant1410, 1gor, matt-h, pySilver, johan-chassaing, dotsam, sanketio, petenelson, nathanielks, rigagoogoo, dslatten, jinschoi, kelin1003, vaishuagola27, rahulsprajapati, Joel-James, utkarshpatel, gsayed786, shashwatmittal, sudhiryadav, thrijith
 Donate Link: http://rtcamp.com/donate/
 Tags: nginx, cache, purge, nginx map, nginx cache, maps, fastcgi, proxy, redis, redis-cache, rewrite, permalinks
 License: GPLv2 or later (of-course)
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.0
-Tested up to: 4.9.5
-Stable tag: 1.9.11
+Tested up to: 5.2.2
+Stable tag: 2.1.0
 
 Cleans nginx's fastcgi/proxy cache or redis-cache whenever a post is edited/published. Also does a few more things.
 
@@ -92,6 +92,19 @@ To purge a page immediately, follow these instructions:
 * Just open this in a browser and the page will be purged instantly.
 * Needless to say, this won't work, if you have a page or taxonomy called 'purge'.
 
+= FAQ - Nginx Redis Cache =
+
+**Q. Can I override the redis hostname, port and prefix?**
+
+Yes, you can force override the redis hostname, port or prefix by defining constant in wp-config.php. For example:
+
+```
+define('RT_WP_NGINX_HELPER_REDIS_HOSTNAME', '10.0.0.1');
+
+define('RT_WP_NGINX_HELPER_REDIS_PORT', '6000');
+
+define('RT_WP_NGINX_HELPER_REDIS_PREFIX', 'page-cache:');
+```
 
 = FAQ - Nginx Map =
 
@@ -113,6 +126,44 @@ Please post your problem in [our free support forum](http://community.rtcamp.com
 2. Remaining settings
 
 == Changelog ==
+
+= 2.1.0 =
+* Add wildcard cache key deletion for device type cache purge. [#203](https://github.com/rtCamp/nginx-helper/pull/203) - by [pradeep910](https://github.com/pradeep910)
+* Add filter `rt_nginx_helper_purge_url` to filter the URL to be purged. [#182](https://github.com/rtCamp/nginx-helper/pull/182) - by [todeveni](https://github.com/todeveni)
+* Add filter `rt_nginx_helper_purge_cached_file` to filter the cached file name. [#182](https://github.com/rtCamp/nginx-helper/pull/182) - by [todeveni](https://github.com/todeveni)
+* Add filter `rt_nginx_helper_remote_purge_url` to filter remote URL to be purged. [#182](https://github.com/rtCamp/nginx-helper/pull/182) - by [todeveni](https://github.com/todeveni)
+* Add action `rt_nginx_helper_after_fastcgi_purge_all` to fire after the FastCGI cache has been purged. [#182](https://github.com/rtCamp/nginx-helper/pull/182) - by [todeveni](https://github.com/todeveni)
+* Add action `rt_nginx_helper_after_redis_purge_all` to fire after the Redis cache has been purged. [#182](https://github.com/rtCamp/nginx-helper/pull/182) - by [todeveni](https://github.com/todeveni)
+* Add action `rt_nginx_helper_purged_file` to fire an action after deleting file from cache. [#182](https://github.com/rtCamp/nginx-helper/pull/182) - by [todeveni](https://github.com/todeveni)
+* Add action `rt_nginx_helper_before_remote_purge_url` to fire an action before purging remote URL. [#182](https://github.com/rtCamp/nginx-helper/pull/182) - by [todeveni](https://github.com/todeveni)
+* Add action `rt_nginx_helper_after_remote_purge_url` to fire an action after remote purge request. [#182](https://github.com/rtCamp/nginx-helper/pull/182) - by [todeveni](https://github.com/todeveni)
+* Fix issue with post purge on new comments. [#175](https://github.com/rtCamp/nginx-helper/pull/175) - by [jinschoi](https://github.com/jinschoi)
+* Fix Nginx Timestamp being added to invalid content type. [#200](https://github.com/rtCamp/nginx-helper/pull/200) - by [thrijith](https://github.com/thrijith)
+* Handle filesize exception while truncating nginx.log file. [#206](https://github.com/rtCamp/nginx-helper/pull/206) - by [peterjanes](https://github.com/peterjanes)
+
+= 2.0.3 =
+* Update article link for fastcgi cache purge. [#187](https://github.com/rtCamp/nginx-helper/pull/187) - by [gagan0123](https://github.com/gagan0123)
+* Fix map generation issue on `SUBDOMAIN_INSTALL`. [#189](https://github.com/rtCamp/nginx-helper/pull/189) - by [ChrisHardie](https://github.com/ChrisHardie)
+
+= 2.0.2 =
+* Fix undefined error when we install the plugin for the first time and if Redis is not available. [#162](https://github.com/rtCamp/nginx-helper/pull/162) - by [Joel-James](https://github.com/Joel-James)
+* Remove extra spacing for nginx map section. [#169](https://github.com/rtCamp/nginx-helper/pull/169) - by [ShashwatMittal](https://github.com/ShashwatMittal)
+* Purge Cache menu in front-end admibar now purge current page. [#173](https://github.com/rtCamp/nginx-helper/pull/173) - by [imranhsayed](https://github.com/imranhsayed)
+* Fix issue where cache is not cleared when page is swiched from publish to draft. [#174](https://github.com/rtCamp/nginx-helper/pull/174) - by [imranhsayed](https://github.com/imranhsayed)
+* Fix an issue where custom purge url option does not show newlines when using multiple urls. [#184](https://github.com/rtCamp/nginx-helper/issues/184) - by [mist-webit](https://github.com/mist-webit)
+
+= 2.0.1 =
+* Fix settings url for multisite: use network_admin_url to get network correct settings url. [#163](https://github.com/rtCamp/nginx-helper/pull/163) - by [Joel-James](https://github.com/Joel-James)
+* Fix php error with arbitrary statement in empty - Prior to PHP 5.5. [#165](https://github.com/rtCamp/nginx-helper/pull/165) - by [PatelUtkarsh](https://github.com/PatelUtkarsh)
+
+= 2.0.0 =
+* Fix typo causing failure to purge on trashed comment. [#159](https://github.com/rtCamp/nginx-helper/pull/159) - by [jinschoi](https://github.com/jinschoi)
+* Refactor Plugin structure and remove unused code. Initial code by [chandrapatel](https://github.com/chandrapatel), [#153](https://github.com/rtCamp/nginx-helper/pull/153) - by [jinschoi](https://github.com/kelin1003),
+* Run phpcs and fix warning. [#158](https://github.com/rtCamp/nginx-helper/pull/158)
+* Make compatible with EasyEngine v4.
+
+= 1.9.12 =
+* Allow override Redis host/port/prefix by defining constant in wp-config.php [#152](https://github.com/rtCamp/nginx-helper/pull/152) - by [vincent-lu](https://github.com/vincent-lu)
 
 = 1.9.11 =
 * Fixed issue where permalinks without trailing slash does not purging [#124](https://github.com/rtCamp/nginx-helper/issues/124) - by Patrick
@@ -344,6 +395,5 @@ Fix url escaping [#82](https://github.com/rtCamp/nginx-helper/pull/82) - by
 
 == Upgrade Notice ==
 
-= 1.9.11 =
-* Fixed issue where permalinks without trailing slash does not purging [#124](https://github.com/rtCamp/nginx-helper/issues/124) - by Patrick
-* Check whether role exist or not before removing capability. [#134](https://github.com/rtCamp/nginx-helper/pull/134) - by [1gor](https://github.com/1gor)
+= 2.1.0 =
+Nginx Helper 2.1.0, introduces new Hooks to extend cache purge, Adds support for wildcard cache key deletion for device type cache and bug fixes.
