@@ -386,6 +386,7 @@ abstract class Purger {
 
 		}
 
+		$url_data['path']   = $url_data['path'] ?? '';
 		$url_data['scheme'] = 'http';
 
 		// Build a hash of the URL.
