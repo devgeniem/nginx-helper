@@ -73,7 +73,7 @@ class Predis_Purger extends Purger {
 
 		} else { // Else purge only site specific cache.
 
-			$parse = wp_parse_url( get_home_url() );
+			$parse         = wp_parse_url( get_home_url() );
 			$parse['path'] = empty( $parse['path'] ) ? '/' : $parse['path'];
 			$this->delete_keys_by_wildcard( $prefix . $parse['scheme'] . 'GET' . $parse['host'] . $parse['path'] . '*' );
 			$this->log( '* ' . get_home_url() . ' Purged! * ' );
@@ -146,7 +146,6 @@ class Predis_Purger extends Purger {
 			} else {
 				$this->log( '- Cache Not Found | ' . $_url_purge_base, 'ERROR' );
 			}
-
 		} else {
 
 			$status = $this->delete_keys_by_wildcard( $_url_purge_base );
@@ -156,7 +155,6 @@ class Predis_Purger extends Purger {
 			} else {
 				$this->log( '- Cache Not Found | ' . $_url_purge_base, 'ERROR' );
 			}
-
 		}
 
 	}
@@ -168,7 +166,7 @@ class Predis_Purger extends Purger {
 
 		global $nginx_helper_admin;
 
-		$parse           = wp_parse_url( site_url() );
+		$parse           = wp_parse_url( home_url() );
 		$prefix          = $nginx_helper_admin->options['redis_prefix'];
 		$_url_purge_base = $prefix . $parse['scheme'] . 'GET' . $parse['host'];
 
@@ -198,7 +196,6 @@ class Predis_Purger extends Purger {
 					} else {
 						$this->log( '- Not Found | ' . $purge_url, 'ERROR' );
 					}
-
 				} else {
 
 					$purge_url = $_url_purge_base . $purge_url;
@@ -209,11 +206,8 @@ class Predis_Purger extends Purger {
 					} else {
 						$this->log( '- Not Found | ' . $purge_url, 'ERROR' );
 					}
-
 				}
-
 			}
-
 		}
 
 	}
