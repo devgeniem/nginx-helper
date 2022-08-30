@@ -35,62 +35,69 @@ class FastCGI_Purger extends Purger {
 		 *
 		 * @param string $url URL to be purged.
 		 */
-		$url = apply_filters( 'rt_nginx_helper_purge_url', $url );
+		$urls = apply_filters( 'rt_nginx_helper_purge_url', $url );
 
-		$this->log( '- Purging URL | ' . $url );
-
-		$parse = wp_parse_url( $url );
-
-		if ( ! isset( $parse['path'] ) ) {
-			$parse['path'] = '';
+		// Force a one-item array if there wasn't already an array returned from the filter.
+		if ( ! is_array( $urls ) ) {
+			$urls = [ $urls ];
 		}
 
-		switch ( $nginx_helper_admin->options['purge_method'] ) {
+		// Loop through the urls.
+		foreach ( $urls as $url ) {
+			$this->log( '- Purging URL | ' . $url );
 
-			case 'unlink_files':
-				$_url_purge_base = $parse['scheme'] . '://' . $parse['host'] . $parse['path'];
-				$_url_purge      = $_url_purge_base;
+			$parse = wp_parse_url( $url );
 
-				if ( ! empty( $parse['query'] ) ) {
-					$_url_purge .= '?' . $parse['query'];
-				}
+			if ( ! isset( $parse['path'] ) ) {
+				$parse['path'] = '';
+			}
 
-				$this->delete_cache_file_for( $_url_purge );
+			switch ( $nginx_helper_admin->options['purge_method'] ) {
 
-				if ( $feed ) {
+				case 'unlink_files':
+					$_url_purge_base = $parse['scheme'] . '://' . $parse['host'] . $parse['path'];
+					$_url_purge      = $_url_purge_base;
 
-					$feed_url = rtrim( $_url_purge_base, '/' ) . '/feed/';
-					$this->delete_cache_file_for( $feed_url );
-					$this->delete_cache_file_for( $feed_url . 'atom/' );
-					$this->delete_cache_file_for( $feed_url . 'rdf/' );
+					if ( ! empty( $parse['query'] ) ) {
+						$_url_purge .= '?' . $parse['query'];
+					}
 
-				}
-				break;
+					$this->delete_cache_file_for( $_url_purge );
 
-			case 'get_request':
-				// Go to default case.
-			default:
-				$_url_purge_base = $this->purge_base_url() . $parse['path'];
-				$_url_purge      = $_url_purge_base;
+					if ( $feed ) {
 
-				if ( isset( $parse['query'] ) && '' !== $parse['query'] ) {
-					$_url_purge .= '?' . $parse['query'];
-				}
+						$feed_url = rtrim( $_url_purge_base, '/' ) . '/feed/';
+						$this->delete_cache_file_for( $feed_url );
+						$this->delete_cache_file_for( $feed_url . 'atom/' );
+						$this->delete_cache_file_for( $feed_url . 'rdf/' );
 
-				$this->do_remote_get( $_url_purge );
+					}
+					break;
 
-				if ( $feed ) {
+				case 'get_request':
+					// Go to default case.
+				default:
+					$_url_purge_base = $this->purge_base_url() . $parse['path'];
+					$_url_purge      = $_url_purge_base;
 
-					$feed_url = rtrim( $_url_purge_base, '/' ) . '/feed/';
-					$this->do_remote_get( $feed_url );
-					$this->do_remote_get( $feed_url . 'atom/' );
-					$this->do_remote_get( $feed_url . 'rdf/' );
+					if ( isset( $parse['query'] ) && '' !== $parse['query'] ) {
+						$_url_purge .= '?' . $parse['query'];
+					}
 
-				}
-				break;
+					$this->do_remote_get( $_url_purge );
 
+					if ( $feed ) {
+
+						$feed_url = rtrim( $_url_purge_base, '/' ) . '/feed/';
+						$this->do_remote_get( $feed_url );
+						$this->do_remote_get( $feed_url . 'atom/' );
+						$this->do_remote_get( $feed_url . 'rdf/' );
+
+					}
+					break;
+
+			}
 		}
-
 	}
 
 	/**
